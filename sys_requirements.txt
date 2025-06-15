@@ -1,0 +1,14 @@
+Goal: To read in a user's saved posts in Reddit and either
+    either list them for reading in a pocket type way, or to
+    use AI to create a overview of the posts.
+
+TOP LEVEL:
+    1. Connect to a user's Reddit account
+    2. Pull in the list of saved posts
+    3. Display the list of posts
+    4. Send the list to an AI endpoint for summarization.
+    5. Retrieve the AI summary and display it.
+
+MID LEVEL:
+    1. Connect using OAuth
+    2. 
