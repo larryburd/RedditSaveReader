@@ -11,4 +11,9 @@ TOP LEVEL:
 
 MID LEVEL:
     1. Connect using OAuth
-    2. 
+    2.
+
+
+NOTES:
+    - Reddit APP ID: ej9rV2pUdu9vI4VMJCDUdA
+    

@@ -1,0 +1,22 @@
+{
+    "manifest_version": 3,
+    "name": "RedditReader",
+    "version": "0.",
+    "permissions": ["identity"],
+    "host_permissions": ["https://www.reddit.com/*", "https://oauth.reddit.com/*"],
+    "description": "Allows a user to easily read their saved posts from Reddit.",
+
+    "icons": {
+        "48": "icons/border-48.png"
+    },
+
+    "background": {
+        "scripts": ["src/reddit_login.js"]
+    },
+    "content_scripts": [
+        {
+            "js": ["src/redditsave.js"],
+            "matches": ["https://www.reddit.com/*"]
+        }
+    ]
+}
