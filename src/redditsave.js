@@ -1,2 +1,7 @@
-import { loginToReddit } from "./reddit_login";
-loginToReddit().then(validate);
+const MESSAGE = 'bkRedditLogin';
+
+browser.runtime.sendMessage({
+    type: MESSAGE
+});
+
+console.log("Message Sent");

@@ -1,3 +1,18 @@
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    const MESSAGE = 'bkRedditLogin';
+
+    console.log("message recieved");
+
+    if (message.type === MESSAGE) {
+        loginToReddit().then(validate);
+        return true;
+    }
+});
+
+
+
+
+
 // Create a random string with the number of characters supplied as len: int
 function generateRandomString(len) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-,_~';
@@ -22,10 +37,11 @@ async function SHA256(text) {
     return hash;
 }
 
-export async function loginToReddit() {
+async function loginToReddit() {
     const [STATE_LEN, CODEVERIFY_LEN] = [16, 64];
     const CLIENTID = 'ej9rV2pUdu9vI4VMJCDUdA';
-    const REDIRECTURI = 'https://sites.google.com/view/read-it-extension/home';
+    //const SITEREDIRECTURI = 'https://sites.google.com/view/read-it-extension/home';
+    const REDIRECTURI = `http://127.0.0.1/mozoauth2/b53ded90afaa60708bc466442e10df566cfbe9e0`;
     const STATE = generateRandomString(STATE_LEN);
     const CODEVERIFIER = generateRandomString(CODEVERIFY_LEN);
     const CODECHALLENGE = base64URLEncode(await SHA256(CODEVERIFIER));
@@ -41,26 +57,37 @@ export async function loginToReddit() {
             code_challenge: CODECHALLENGE,
             code_challenge_method: '5256'
         }).toString();
-
     
-    return browser.identity.launchWebAuthFlow(
+    let webflow = browser.identity.launchWebAuthFlow(
         {
             url: AUTHURL,
             interactive: true
-        }), AUTHURL, CODEVERIFIER;
+        });
+
+    let redirect_url = await Promise.resolve(webflow);
+    
+    redirectObj = {
+        "state": STATE,
+        "client_id": CLIENTID,
+        "redirect_uri": REDIRECTURI,
+        "codeVerifier": CODEVERIFIER,
+        "redirect_url": redirect_url
+    }
+
+    return redirectObj;
 }
 
-async function validate(redirectURL, authUrl, codeVerifier) {
-    if (browser.runtime.lastError || !redirectUrl) {
+async function validate(redirectObj) {
+    if (browser.runtime.lastError || !redirectObj.redirect_url) {
                 console.error(browser.runtime.lastError);
                 return;
             }
 
-            const RURL = new URL(authUrl.redirectUrl);
+            const RURL = new URL(redirectObj.redirect_url);
             const CODE = RURL.searchParams.get('code');
             const RETURNEDSTATE = RURL.searchParams.get('state');
 
-            if (authUrl.state !== RETURNEDSTATE) {
+            if (redirectObj.state !== RETURNEDSTATE) {
                 console.error('State does not match!');
                 return;
             }
@@ -69,19 +96,16 @@ async function validate(redirectURL, authUrl, codeVerifier) {
             const TOKENRESPONSE = await fetch('https://www.reddit.com/api/v1/access_token', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencode',
-                    'Authorization': 'Bassic ' + btoa(`${CLIENTID}:`)
+                    'Authorization': 'Basic ' + btoa(`${redirectObj.client_id}:`)
                 },
                 body: new URLSearchParams({
                     grant_type: 'authorization_code',
                     code: CODE,
-                    redirect_uri: authUrl.redirect_uri,
-                    code_verifier: codeVerifier
+                    redirect_uri: redirectObj.redirect_uri,
+                    code_verifier: redirectObj.codeVerifier
                 })
             });
 
             const TOKENDATA = await TOKENRESPONSE.json();
             console.log('Access token: ', TOKENDATA.access_token)
 }
-
-//loginToReddit().then(validate);
