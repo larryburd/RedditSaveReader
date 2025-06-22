@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "RedditReader",
     "version": "0.2",
-    "permissions": ["identity"],
+    "permissions": ["identity", "storage"],
     "host_permissions": ["https://www.reddit.com/*", "https://oauth.reddit.com/*"],
     "description": "Allows a user to easily read their saved posts from Reddit.",
 

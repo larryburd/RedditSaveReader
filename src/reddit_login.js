@@ -3,8 +3,6 @@
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const MESSAGE = 'bkRedditLogin';
 
-    console.log("message recieved");
-
     if (message.type === MESSAGE) {
         loginToReddit().then(validate);
         return true;
@@ -108,6 +106,15 @@ async function validate(redirectObj) {
             });
 
             const TOKENDATA = await TOKENRESPONSE.json();
-            // TODO: Save access token to local storage for anytime retrieval
-            console.log('Access token: ', TOKENDATA.access_token)
+            // TODO: Save access token to local storage for anytime retreival
+            await browser.storage.local.set(TOKENDATA);
+            sendLoggedInMsg();
+}
+
+function sendLoggedInMsg() {
+    const MESSAGE = 'bkLoggedIn';
+
+    browser.runtime.sendMessage({
+        type: MESSAGE
+    });
 }
