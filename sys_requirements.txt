@@ -16,8 +16,4 @@ MID LEVEL:
 
 NOTES:
     - Reddit APP ID: ej9rV2pUdu9vI4VMJCDUdA
-
-
-
-    
-    "https://b53ded90afaa60708bc466442e10df566cfbe9e0.extensions.allizom.org/"
+    - Extension Redirect URI: "https://b53ded90afaa60708bc466442e10df566cfbe9e0.extensions.allizom.org/"

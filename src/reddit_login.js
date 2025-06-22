@@ -1,3 +1,5 @@
+// Listens for a message to equal MESSAGE and will trigger the main function
+// of the extension
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const MESSAGE = 'bkRedditLogin';
 
@@ -8,10 +10,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     }
 });
-
-
-
-
 
 // Create a random string with the number of characters supplied as len: int
 function generateRandomString(len) {
@@ -30,6 +28,7 @@ function base64URLEncode(str) {
         .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+s/, '');
 }
 
+// Returns a SHA256 hash of the provided text: string
 async function SHA256(text) {
     const encorder = new TextEncoder();
     const data = encorder.encode(text);
@@ -37,10 +36,10 @@ async function SHA256(text) {
     return hash;
 }
 
+// Main function to retrieve the redirect URL for the reddit token
 async function loginToReddit() {
     const [STATE_LEN, CODEVERIFY_LEN] = [16, 64];
     const CLIENTID = 'ej9rV2pUdu9vI4VMJCDUdA';
-    //const SITEREDIRECTURI = 'https://sites.google.com/view/read-it-extension/home';
     const REDIRECTURI = `http://127.0.0.1/mozoauth2/b53ded90afaa60708bc466442e10df566cfbe9e0`;
     const STATE = generateRandomString(STATE_LEN);
     const CODEVERIFIER = generateRandomString(CODEVERIFY_LEN);
@@ -77,6 +76,8 @@ async function loginToReddit() {
     return redirectObj;
 }
 
+// Validates the request for a redirect url and supplied state
+// Then returns the reddit access token for the logged in user
 async function validate(redirectObj) {
     if (browser.runtime.lastError || !redirectObj.redirect_url) {
                 console.error(browser.runtime.lastError);
@@ -107,5 +108,6 @@ async function validate(redirectObj) {
             });
 
             const TOKENDATA = await TOKENRESPONSE.json();
+            // TODO: Save access token to local storage for anytime retrieval
             console.log('Access token: ', TOKENDATA.access_token)
 }
