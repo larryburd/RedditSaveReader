@@ -4,8 +4,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const MESSAGE = 'bkRedditLogin';
 
     if (message.type === MESSAGE) {
-        loginToReddit().then(validate);
-        return true;
+        return loginToReddit().then(validate).then(Promise.resolve(true));
     }
 });
 
@@ -108,13 +107,5 @@ async function validate(redirectObj) {
             const TOKENDATA = await TOKENRESPONSE.json();
             // TODO: Save access token to local storage for anytime retreival
             await browser.storage.local.set(TOKENDATA);
-            sendLoggedInMsg();
-}
-
-function sendLoggedInMsg() {
-    const MESSAGE = 'bkLoggedIn';
-
-    browser.runtime.sendMessage({
-        type: MESSAGE
-    });
+            return true;
 }

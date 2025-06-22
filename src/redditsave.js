@@ -1,29 +1,30 @@
-function sendMessage() {
+browser.runtime.onMessage.addListener(getToken);
+
+function getToken() {
+    let tokenData = '';
+
+    tokenData = browser.storage.local.get("access_token");
+    console.log('TOKEN: ' + JSON.stringify(tokenData));
+}
+
+
+async function sendMessage() {
     const MESSAGE = 'bkRedditLogin';
 
     // Will send a message when the extension is clicked,
     // provided the user is on an allowed site
-    browser.runtime.sendMessage({
+    response = await browser.runtime.sendMessage({
         type: MESSAGE
     });
-}
 
-function listenForMessage() {
-    const MESSAGE = 'bkLoggedIn';
-    let tokenData = '';
-    browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if(message.type !== MESSAGE) {
-            return;
-        } else {
-            tokenData = browser.storage.local.set(TOKENDATA);
-        }
-    });
-    
-    console.log(tokenData);
+    if (response) {
+        getToken();
+    } else {
+        console.error("NO TOKEN SET");
+    }
 }
 
 function main() {
-    listenForMessage();
     sendMessage();
 }
 
