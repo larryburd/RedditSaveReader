@@ -105,7 +105,8 @@ async function validate(redirectObj) {
             });
 
             const TOKENDATA = await TOKENRESPONSE.json();
-            // TODO: Save access token to local storage for anytime retreival
-            await browser.storage.local.set(TOKENDATA);
+            
+            // Save access token to local storage for anytime retreival
+            await browser.storage.local.set({'reddit_token': TOKENDATA});
             return true;
 }

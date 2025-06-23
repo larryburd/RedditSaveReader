@@ -1,12 +1,11 @@
 browser.runtime.onMessage.addListener(getToken);
 
 function getToken() {
-    let tokenData = '';
-
-    tokenData = browser.storage.local.get("access_token");
-    console.log('TOKEN: ' + JSON.stringify(tokenData));
+    // Retrieves the JWT token from local storage
+    browser.storage.local.get().then((tokenData) => {
+        console.log('TOKEN: ' + tokenData.access_token);
+    });   
 }
-
 
 async function sendMessage() {
     const MESSAGE = 'bkRedditLogin';
