@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "RedditReader",
     "version": "0.2",
-    "permissions": ["identity"],
+    "permissions": ["identity", "storage", "scripting"],
     "host_permissions": ["https://www.reddit.com/*", "https://oauth.reddit.com/*"],
     "description": "Allows a user to easily read their saved posts from Reddit.",
 
@@ -14,10 +14,9 @@
         "scripts": ["src/reddit_login.js"]
     },
 
-    "content_scripts": [
-        {
-            "matches": ["https://www.reddit.com/*"],
-            "js": ["src/redditsave.js"]
-        }
-    ]
+    "action": {
+        "default_icon": "icons/book-alt.png",
+        "default_title": "Readit-er",
+        "default_popup": "pages/redditsave.html"
+    }
 }
