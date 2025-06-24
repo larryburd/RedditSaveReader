@@ -1,4 +1,5 @@
 browser.runtime.onMessage.addListener(getToken);
+document.getElementById("getSavedPosts").onclick = sendMessage;
 
 function getToken() {
     // Retrieves the JWT token from local storage
@@ -22,9 +23,3 @@ async function sendMessage() {
         console.error("NO TOKEN SET");
     }
 }
-
-function main() {
-    sendMessage();
-}
-
-main();
